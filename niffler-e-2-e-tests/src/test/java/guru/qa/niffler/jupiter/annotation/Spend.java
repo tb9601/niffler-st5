@@ -8,8 +8,9 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 @Retention(RetentionPolicy.RUNTIME)
-@Target({ElementType.METHOD, ElementType.ANNOTATION_TYPE})
+@Target(ElementType.METHOD)
 public @interface Spend {
+    String category();
 
     CurrencyValues currency();
 
@@ -17,4 +18,5 @@ public @interface Spend {
 
     String description();
 
+    String username();
 }
