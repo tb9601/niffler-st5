@@ -1,6 +1,8 @@
 package guru.qa.niffler.test;
 
-import com.codeborne.selenide.*;
+import com.codeborne.selenide.Configuration;
+import com.codeborne.selenide.Selenide;
+import com.codeborne.selenide.SelenideElement;
 import guru.qa.niffler.jupiter.annotation.GenerateCategory;
 import guru.qa.niffler.jupiter.annotation.GenerateSpend;
 import guru.qa.niffler.model.CurrencyValues;
@@ -40,7 +42,7 @@ public class SpendingTest {
         Selenide.open("http://127.0.0.1:3000/main");
         $("a[href*='redirect']").click();
         $("input[name='username']").setValue("dima");
-        $("input[name='password']").setValue("1234");
+        $("input[name='password']").setValue("12345");
         $("button[type='submit']").click();
 
         $(".spendings-table tbody").should(visible);
