@@ -1,10 +1,13 @@
 package guru.qa.niffler.jupiter.extension;
 
+import guru.qa.niffler.api.CategoryApi;
 import guru.qa.niffler.api.SpendApi;
 import guru.qa.niffler.jupiter.annotation.Category;
+import guru.qa.niffler.jupiter.annotation.GenerateCategory;
+import guru.qa.niffler.jupiter.annotation.Spend;
 import guru.qa.niffler.model.CategoryJson;
+import guru.qa.niffler.model.SpendJson;
 import okhttp3.OkHttpClient;
-import okhttp3.logging.HttpLoggingInterceptor;
 import org.junit.jupiter.api.extension.BeforeEachCallback;
 import org.junit.jupiter.api.extension.ExtensionContext;
 import org.junit.platform.commons.support.AnnotationSupport;
@@ -12,9 +15,7 @@ import retrofit2.Retrofit;
 import retrofit2.converter.jackson.JacksonConverterFactory;
 
 import java.io.IOException;
-import java.util.Objects;
-
-import static okhttp3.logging.HttpLoggingInterceptor.Level.BODY;
+import java.util.Date;
 
 public class CategoryExtension implements BeforeEachCallback {
 
@@ -22,7 +23,6 @@ public class CategoryExtension implements BeforeEachCallback {
             = ExtensionContext.Namespace.create(CategoryExtension.class);
 
     private static final OkHttpClient okHttpClient = new OkHttpClient.Builder()
-            .addNetworkInterceptor(new HttpLoggingInterceptor().setLevel(BODY))
             .build();
 
     private final Retrofit retrofit = new Retrofit.Builder()
@@ -33,25 +33,21 @@ public class CategoryExtension implements BeforeEachCallback {
 
     @Override
     public void beforeEach(ExtensionContext extensionContext) throws Exception {
-        SpendApi spendApi = retrofit.create(SpendApi.class);
+        CategoryApi categoryApi = retrofit.create(CategoryApi.class);
 
         AnnotationSupport.findAnnotation(
                 extensionContext.getRequiredTestMethod(),
-                Category.class
+                GenerateCategory.class
         ).ifPresent(
-                cat -> {
+                category -> {
                     CategoryJson categoryJson = new CategoryJson(
                             null,
-                            cat.category(),
-                            cat.username()
+                            category.category(),
+                            category.username()
                     );
                     try {
-                        CategoryJson result = Objects.requireNonNull(
-                                spendApi.createCategory(categoryJson).execute().body()
-                        );
-                        extensionContext.getStore(NAMESPACE).put(
-                                extensionContext.getUniqueId(), result
-                        );
+                        CategoryJson result = categoryApi.createCategory(categoryJson).execute().body();
+                        extensionContext.getStore(NAMESPACE).put("category", result);
                     } catch (IOException e) {
                         throw new RuntimeException(e);
                     }

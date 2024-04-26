@@ -22,3 +22,4 @@ public record SpendJson(
         String username) {
 
 }
+
