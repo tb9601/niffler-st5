@@ -4,7 +4,6 @@ import com.codeborne.selenide.Configuration;
 import com.codeborne.selenide.Selenide;
 import guru.qa.niffler.jupiter.annotation.Category;
 import guru.qa.niffler.jupiter.annotation.Spend;
-import guru.qa.niffler.jupiter.annotation.meta.WebTestHttp;
 import guru.qa.niffler.model.CategoryJson;
 import guru.qa.niffler.model.CurrencyValues;
 import guru.qa.niffler.model.SpendJson;
@@ -21,8 +20,7 @@ import org.openqa.selenium.OutputType;
 import java.io.ByteArrayInputStream;
 import java.util.Objects;
 
-@WebTestHttp
-public class SpendingHttpTest {
+public class SpendingHttpTest extends BaseWebTest {
     static {
         Configuration.browserSize = "1920x1080";
     }
@@ -34,9 +32,9 @@ public class SpendingHttpTest {
     @BeforeEach
     void doLogin() {
         // createSpend
-        Selenide.open("http://127.0.0.1:3000/");
+        Selenide.open(CFG.frontUrl());
         UserJson dima = UserJson.simpleUser("dima1", "cat1");
-        Selenide.open("http://127.0.0.1:3000/");
+        Selenide.open(CFG.frontUrl());
         welcomePage.loginBtnClick();
         loginPage.fillLoginPage(dima);
     }
